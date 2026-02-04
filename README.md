@@ -111,7 +111,7 @@
 ### 일정 수정
 
 1. 요청: Request header, Request body(JSON)
-* Method: PUT/PATCH
+* Method: PATCH(일부 수정)
 * Endpoint: /api/schedule/{id}
 * header: content-Type > application/json
 * body: JSON
