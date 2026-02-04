@@ -2,6 +2,8 @@ package kr.spartaclub.schedule_api.service;
 
 import kr.spartaclub.schedule_api.dto.CreateScheduleRequest;
 import kr.spartaclub.schedule_api.dto.CreateScheduleResponse;
+import kr.spartaclub.schedule_api.dto.UpdateScheduleRequest;
+import kr.spartaclub.schedule_api.dto.UpdateScheduleResponse;
 import kr.spartaclub.schedule_api.entity.Schedule;
 import kr.spartaclub.schedule_api.repository.ScheduleRepository;
 import lombok.RequiredArgsConstructor;
@@ -76,5 +78,32 @@ public class ScheduleService {
             dtos.add(dto);
         }
         return dtos;
+    }
+
+    // 수정
+    @Transactional
+    public UpdateScheduleResponse update(Long scheduleId, UpdateScheduleRequest request){
+        Schedule schedule = scheduleRepository.findById(scheduleId).orElseThrow(
+                () -> new IllegalStateException("없는 일정입니다")
+        );
+
+        if (!schedule.getPassword().equals(request.getPassword())) {
+            throw new IllegalStateException("비밀번호가 일치하지 않습니다.");
+        }
+
+        schedule.update(
+                request.getTitle(),
+                request.getAuthor()
+        );
+
+
+        return new UpdateScheduleResponse(
+                schedule.getId(),
+                schedule.getTitle(),
+                schedule.getContent(),
+                schedule.getAuthor(),
+                schedule.getCreatedAt(),
+                schedule.getModifiedAt()
+        );
     }
 }

@@ -1,8 +1,6 @@
 package kr.spartaclub.schedule_api.controller;
 
-import kr.spartaclub.schedule_api.dto.CreateScheduleRequest;
-import kr.spartaclub.schedule_api.dto.CreateScheduleResponse;
-import kr.spartaclub.schedule_api.dto.GetOneScheduleResponse;
+import kr.spartaclub.schedule_api.dto.*;
 import kr.spartaclub.schedule_api.entity.Schedule;
 import kr.spartaclub.schedule_api.repository.ScheduleRepository;
 import kr.spartaclub.schedule_api.service.ScheduleService;
@@ -35,4 +33,11 @@ public class ScheduleController {
         return scheduleService.getAll();
     }
 
+    @PatchMapping("/schedule/{scheduleId}")
+    public UpdateScheduleResponse update(
+            @PathVariable Long scheduleId,
+            @RequestBody UpdateScheduleRequest request
+    ) {
+        return scheduleService.update(scheduleId, request);
+    }
 }
