@@ -1,7 +1,6 @@
 package kr.spartaclub.schedule_api.controller;
 
 import kr.spartaclub.schedule_api.dto.*;
-import kr.spartaclub.schedule_api.entity.Schedule;
 import kr.spartaclub.schedule_api.repository.ScheduleRepository;
 import kr.spartaclub.schedule_api.service.ScheduleService;
 import lombok.RequiredArgsConstructor;
@@ -9,7 +8,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.ArrayList;
 import java.util.List;
 
-
+@RequestMapping("/api")
 @RestController
 @RequiredArgsConstructor
 
@@ -39,5 +38,10 @@ public class ScheduleController {
             @RequestBody UpdateScheduleRequest request
     ) {
         return scheduleService.update(scheduleId, request);
+    }
+
+    @DeleteMapping("/schedule/{scheduleId}")
+    public void delete(@PathVariable Long scheduleId){
+        scheduleService.delete(scheduleId);
     }
 }

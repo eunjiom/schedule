@@ -1,6 +1,5 @@
 package kr.spartaclub.schedule_api.dto;
 
-import jakarta.persistence.Column;
 import lombok.Getter;
 
 @Getter
