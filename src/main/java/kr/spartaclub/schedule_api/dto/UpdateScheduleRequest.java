@@ -1,4 +1,12 @@
 package kr.spartaclub.schedule_api.dto;
 
+import lombok.Getter;
+
+@Getter
 public class UpdateScheduleRequest {
+
+    private String title;
+    private String author;
+    private String password;
+
 }
