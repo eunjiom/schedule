@@ -62,8 +62,17 @@ public class ScheduleService {
 
     // 다 건 조회
     @Transactional(readOnly = true)
-    public List<CreateScheduleResponse> getAll() {
-        List<Schedule> schedules = scheduleRepository.findAll();
+    public List<CreateScheduleResponse> getAll(String author) {
+        List<Schedule> schedules;
+
+        if (author != null) {
+            // author 필터 있는 경우
+            schedules = scheduleRepository.findByAuthorOrderByModifiedAtDesc(author);
+        } else {
+            // 전체 조회
+            schedules = scheduleRepository.findAllByOrderByModifiedAtDesc();
+        }
+
         List<CreateScheduleResponse> dtos = new ArrayList<>();
 
         for (Schedule schedule : schedules) {

@@ -28,8 +28,10 @@ public class ScheduleController {
     }
 
     @GetMapping("/schedule")
-    public List<CreateScheduleResponse> getAll() {
-        return scheduleService.getAll();
+    public List<CreateScheduleResponse> getAll(
+            @RequestParam(required = false) String author
+    ) {
+        return scheduleService.getAll(author);
     }
 
     @PatchMapping("/schedule/{scheduleId}")
