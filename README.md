@@ -173,3 +173,7 @@
 | 200 |Ok | 삭제 성공 |
 | 403 |Forbidden | 비밀번호 불일치 |
 | 404 |Not Found | 해당 ID 일정 없음 |
+
+## ERD
+<img width="255" height="320" alt="ERD" src="https://github.com/user-attachments/assets/898c0c3b-43de-40b9-8dce-005926b0e642" />
+
