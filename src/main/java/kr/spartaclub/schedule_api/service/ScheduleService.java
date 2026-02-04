@@ -1,9 +1,6 @@
 package kr.spartaclub.schedule_api.service;
 
-import kr.spartaclub.schedule_api.dto.CreateScheduleRequest;
-import kr.spartaclub.schedule_api.dto.CreateScheduleResponse;
-import kr.spartaclub.schedule_api.dto.UpdateScheduleRequest;
-import kr.spartaclub.schedule_api.dto.UpdateScheduleResponse;
+import kr.spartaclub.schedule_api.dto.*;
 import kr.spartaclub.schedule_api.entity.Schedule;
 import kr.spartaclub.schedule_api.repository.ScheduleRepository;
 import lombok.RequiredArgsConstructor;
@@ -118,15 +115,19 @@ public class ScheduleService {
 
     // 삭제
     @Transactional
-    public void delete(Long scheduleId){
-        boolean existence = scheduleRepository.existsById(scheduleId);
+    public void delete(Long scheduleId, DeleteScheduleRequest request) {
 
-        // 유저가 없는 경우
-        if (!existence) {
-            throw new IllegalStateException("존재하지 않는 유저입니다.");
+        // 1) 일정(=유저라고 말했는데 여기선 일정)이 없는 경우 -> 예외
+        Schedule schedule = scheduleRepository.findById(scheduleId)
+                .orElseThrow(() -> new IllegalStateException("존재하지 않는 일정입니다."));
+
+        // 2) 일정은 있는데 비밀번호가 틀린 경우 -> 예외
+        if (!schedule.isPasswordMatch(request.getPassword())) {
+            throw new IllegalStateException("비밀번호가 일치하지 않습니다.");
         }
 
-        // 유저가 있는 경우 > 삭제
-        scheduleRepository.deleteById(scheduleId);
+        // 3) 일정이 있고 비밀번호가 맞는 경우 -> 삭제(정상 케이스)
+        scheduleRepository.delete(schedule);
     }
+
 }

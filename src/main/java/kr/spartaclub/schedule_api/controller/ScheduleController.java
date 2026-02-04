@@ -43,7 +43,10 @@ public class ScheduleController {
     }
 
     @DeleteMapping("/schedule/{scheduleId}")
-    public void delete(@PathVariable Long scheduleId){
-        scheduleService.delete(scheduleId);
+    public void delete(
+            @PathVariable Long scheduleId,
+            @RequestBody DeleteScheduleRequest request
+    ){
+        scheduleService.delete(scheduleId, request);
     }
 }
