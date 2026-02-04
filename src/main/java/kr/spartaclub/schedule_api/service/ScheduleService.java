@@ -42,12 +42,12 @@ public class ScheduleService {
 
     // 단 건 조회
     @Transactional(readOnly = true)
-    public CreateScheduleResponse getOne(Long scheduleId) {
+    public GetOneScheduleResponse getOne(Long scheduleId) {
         Schedule schedule = scheduleRepository.findById(scheduleId).orElseThrow(
                 () -> new IllegalStateException("없는 일정입니다.")
         );
 
-        return new CreateScheduleResponse(
+        return new GetOneScheduleResponse(
                 schedule.getId(),
                 schedule.getTitle(),
                 schedule.getContent(),

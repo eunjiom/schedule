@@ -23,7 +23,7 @@ public class ScheduleController {
     }
 
     @GetMapping("/schedule/{scheduleId}")
-    public CreateScheduleResponse getOne(@PathVariable Long scheduleId) {
+    public GetOneScheduleResponse getOne(@PathVariable Long scheduleId) {
         return scheduleService.getOne(scheduleId);
     }
 
