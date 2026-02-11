@@ -1,6 +1,6 @@
-# 일정 관리 앱
+# API 명세서
 
-## API 명세서
+## 일정
 
 ### 일정 생성
 
@@ -15,8 +15,8 @@
 |-------|-----|-------|-------------|
 | title | O |String| 일정 제목 |
 | content | O |String | 일정 내용 |
-| author | O |String | 작성자명 |
-| password | O |String | 비밀번호 |
+
+* 작성자 정보는 세션 로그인 유저로 자동 저장됨(schedule.user._id)
 
 2. 응답: ResponseBody(JSON)
 * 응답값
@@ -169,6 +169,127 @@
 
 * 존재하지 않는 일정 요청 시 예외 발생
 * 비밀번호가 일치하지 않을 경우 예외 발생
+
+## 유저
+
+### 유저 생성(회원가입)
+
+1. 요청: Request header, Request body(JSON)
+* Method: POST
+* Endpoint: /api/user/signup
+* header: content-Type > application/json
+* body: JSON
+* 요청값
+
+| 필드명 | 필수 | 타입 | 설명 |
+|-------|-----|-------|-------------|
+| username | O |String| 유저명 |
+| email | O |String| 이메일 |
+| password | O |String | 비밀번호(8자 이상) |
+
+2. 응답: ResponseBody(JSON)
+* 응답값
+
+| 필드명 | 필수 | 타입 | 설명 |
+|-------|-----|-------|-------------|
+| id | O |Long| 유저 고유 ID |
+| username | O |String| 유저명 |
+| email | O |String| 이메일 |
+| createdAt | O |String | 가입일 |
+| modifiedAt | O |String | 회원정보 수정일 |
+
+* 상태코드
+| 상태코드 | 메시지 |  설명 |
+|-------|-----|-------------|
+| 200 |OK| 회원가입 성공 |
+| 400 |Bad Request | 요청 값 누락/형식 오류, 비밀번호 8자 미만 |
+
+### 유저 전체 조회
+
+1. 요청
+* Method: POST
+* Endpoint: /api/user
+* header: content-Type > application/json
+* body: JSON
+
+2. 응답: ResponseBody(JSON)
+* 응답값: 배열(List)
+
+| 필드명 | 필수 | 타입 | 설명 |
+|-------|-----|-------|-------------|
+| id | O |Long| 유저 고유 ID |
+| username | O |String| 유저명 |
+| email | O |String| 이메일 |
+| createdAt | O |String | 가입일 |
+| modifiedAt | O |String | 회원정보 수정일 |
+
+* 상태코드
+| 상태코드 | 메시지                   | 설명          |
+| ---- | --------------------- | ----------- |
+| 200  | OK                    | 유저 전체 조회 성공 |
+
+### 유저 선택 조회
+
+1. 요청: Request header, Request body(JSON)
+* Method: GET
+* Endpoint: /api/user/{id}
+* header: x
+* body: x
+* 요청값
+
+| 필드명 | 필수 | 타입   | 설명        |
+| --- | -- | ---- | --------- |
+| id  | O  | Long | 조회할 유저 ID |
+
+2. 응답: ResponseBody(JSON)
+* 응답값
+
+| 필드명        | 필수 | 타입     | 설명       |
+| ---------- | -- | ------ | -------- |
+| id         | O  | Long   | 유저 고유 ID |
+| username   | O  | String | 유저명      |
+| email      | O  | String | 이메일      |
+| createdAt  | O  | String | 가입일      |
+| modifiedAt | O  | String | 회원정보 수정일 |
+
+* 상태코드
+
+| 상태코드 | 메시지                   | 설명         |
+| ---- | --------------------- | ---------- |
+| 200  | OK                    | 단건 조회 성공   |
+| 404  | Not Found             | 존재하지 않는 유저 |
+
+## 로그인(인증)
+
+### 로그인
+
+1. 요청: Request header, Request body(JSON)
+* Method: POST
+* Endpoint: /api/auth/login
+* header: content-Type > application/json
+* body: JSON
+* 요청값
+
+| 필드명      | 필수 | 타입     | 설명   |
+| -------- | -- | ------ | ---- |
+| email    | O  | String | 이메일  |
+| password | O  | String | 비밀번호 |
+
+2. 응답: ResponseBody(JSON)
+* 응답값
+
+| 필드명     | 필수 | 타입     | 설명     |
+| ------- | -- | ------ | ------ |
+| message | O  | String | 로그인 성공 |
+
+* 상태코드
+
+| 상태코드 | 메시지                   | 설명            |
+| ---- | --------------------- | ------------- |
+| 200  | OK                    | 로그인 성공(세션 생성) |
+| 401  | Unauthorized          | 이메일/비밀번호 불일치  |
+| 400  | Bad Request           | 요청 값 누락/형식 오류 |
+
 
 ## ERD
 <img width="255" height="320" alt="ERD" src="https://github.com/user-attachments/assets/898c0c3b-43de-40b9-8dce-005926b0e642" />
