@@ -24,7 +24,7 @@
 | id | O |Long| 일정 고유 ID |
 | title | O |String | 일정 제목 |
 | content | O |String | 일정 내용 |
-| author | O |String | 작성자명 |
+| username | O |String | 작성자명 |
 | createdAt | O |String | 작성일 |
 | modifiedAt | O |String | 수정일 |
 
@@ -114,6 +114,7 @@
 |-------|-----|-------|-------------|
 | id | O |Long| 수정할 일정 ID |
 | title | X |String | 수정할 일정 제목 |
+| content | X |String | 수정할 내용 |
 
 2. 응답: ResponseBody(JSON)
 * 응답값
@@ -122,8 +123,8 @@
 |-------|-----|-----|-------------|
 | id | O |Long| 일정 고유 ID |
 | title | O |String | 수정된 제목 |
-| content | O |String | 기존 내용 |
-| username | O |String | 수정된 작성자명 |
+| content | O |String | 수정된 내용 |
+| username | O |String | 작성자명 |
 | createdAt | O |String | 작성일 |
 | modifiedAt | O |String | 수정일(갱신) |
 
@@ -132,17 +133,17 @@
 | 상태코드 | 메시지 |  설명 |
 |-------|-----|-------------|
 | 200 |Ok | 수정 성공 |
+| 401 | Unauthorized | 로그인 필요 |
 
 * 존재하지 않는 일정 요청 시 예외 발생
-* 비밀번호가 일치하지 않을 경우 예외 발생
 
 ### 일정 삭제
 
 1. 요청: Request header, Request body(JSON)
 * Method: DELETE
 * Endpoint: /api/schedule/{id}
-* header: content-Type > application/json
-* body: JSON
+* header: X
+* body: X
 * 요청값
   
 | 필드명 | 필수 | 타입 | 설명 |
@@ -157,9 +158,9 @@
 | 상태코드 | 메시지 |  설명 |
 |-------|-----|-------------|
 | 200 |Ok | 삭제 성공 |
+| 401 | Unauthorized | 로그인 필요 |
 
 * 존재하지 않는 일정 요청 시 예외 발생
-* 비밀번호가 일치하지 않을 경우 예외 발생
 
 ## 유저
 
@@ -201,8 +202,8 @@
 1. 요청: Request header, Request body(JSON)
 * Method: GET
 * Endpoint: /api/user
-* header: content-Type > application/json
-* body: JSON
+* header: X
+* body: X
 
 2. 응답: ResponseBody(JSON)
 * 응답값: 배열(List)
@@ -266,6 +267,7 @@
 | id       | O  | Long   | 수정할 유저 ID(PathVariable) |
 | username | X  | String | 수정할 유저명                 |
 | email    | X  | String | 수정할 이메일                 |
+| password    | X  | String | 수정할 비밀번호                |
 
 2. 응답: ResponseBody(JSON)
 
