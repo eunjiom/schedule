@@ -42,7 +42,7 @@
 
 1. 요청: Request header, Request body(JSON)
 * Method: GET
-* Endpoint: /api/schedule(?author=홍길동)
+* Endpoint: /api/schedule(?username=홍길동)
 * header: x
 * body: x
 * 정렬: modifiedAt > 내림차순
@@ -50,7 +50,7 @@
 
 | 필드명 | 필수 | 타입 | 설명 |
 |-------|-----|-----|-------------|
-|author | X |String| 작성자 명으로 필터 |
+| username | X |String| 작성자 명으로 필터 |
 
 2. 응답: ResponseBody(JSON)
 * 응답값: 배열(List)
@@ -60,7 +60,7 @@
 | id | O |Long| 일정 고유 ID |
 | title | O |String | 일정 제목 |
 | content | O |String | 일정 내용 |
-| author | O |String | 작성자명 |
+| username | O |String | 작성자명 |
 | createdAt | O |String | 작성일 |
 | modifiedAt | O |String | 수정일 |
 
@@ -70,8 +70,6 @@
 |-------|-----|-------------|
 | 200 | OK | 전체 일정 조회 성공 |
 | 400 | Bad Request | 쿼리 파라미터 형식 오류 |
-| 500 | Internal Server Error | 서버 내부 오류 |
-
 
 ### 선택 일정 조회
 
@@ -94,7 +92,7 @@
 | id | O |Long| 일정 고유 ID |
 | title | O |String | 일정 제목 |
 | content | O |String | 일정 내용 |
-| author | O |String | 작성자명 |
+| username | O |String | 작성자명 |
 | createdAt | O |String | 작성일 |
 | modifiedAt | O |String | 수정일 |
 
@@ -117,9 +115,7 @@
 | 필드명 | 필수 | 타입 | 설명 |
 |-------|-----|-------|-------------|
 | id | O |Long| 수정할 일정 ID |
-| title | O |String | 수정할 일정 제목 |
-| author | O |String | 수정할 작성자명 |
-| password | O |String | 저장된 비밀번호 일치여부 |
+| title | X |String | 수정할 일정 제목 |
 
 2. 응답: ResponseBody(JSON)
 * 응답값
@@ -129,7 +125,7 @@
 | id | O |Long| 일정 고유 ID |
 | title | O |String | 수정된 제목 |
 | content | O |String | 기존 내용 |
-| author | O |String | 수정된 작성자명 |
+| username | O |String | 수정된 작성자명 |
 | createdAt | O |String | 작성일 |
 | modifiedAt | O |String | 수정일(갱신) |
 
@@ -154,7 +150,6 @@
 | 필드명 | 필수 | 타입 | 설명 |
 |-------|-----|-------|-------------|
 | id | O |Long| 삭제할 일정 ID |
-| password | O |String | 저장된 비밀번호와 일치여부 |
 
 2. 응답: ResponseBody(JSON)
 * 응답값: 삭제 성공 시 응답 Body는 없습니다.
