@@ -38,8 +38,6 @@
 | 400 |Bad Request | 요청 값 누락/형식 오류(필수값 미입력 등) |
 | 500 | Internal Server Error | 서버 내부 오류 |
 
-## 일정 조회
-
 ### 전체 일정 조회
 
 1. 요청: Request header, Request body(JSON)
@@ -259,9 +257,67 @@
 | 200  | OK                    | 단건 조회 성공   |
 | 404  | Not Found             | 존재하지 않는 유저 |
 
+### 유저 수정
+
+1. 요청: Request header, Request body(JSON)
+* Method: PATCH(일부 수정)
+* Endpoint: /api/user/{id}
+* header: content-Type > application/json
+* body: JSON
+* 요청값
+
+| 필드명      | 필수 | 타입     | 설명                      |
+| -------- | -- | ------ | ----------------------- |
+| id       | O  | Long   | 수정할 유저 ID(PathVariable) |
+| username | X  | String | 수정할 유저명                 |
+| email    | X  | String | 수정할 이메일                 |
+
+2. 응답: ResponseBody(JSON)
+
+* 응답값
+
+| 필드명        | 필수 | 타입     | 설명           |
+| ---------- | -- | ------ | ------------ |
+| id         | O  | Long   | 유저 고유 ID     |
+| username   | O  | String | 유저명          |
+| email      | O  | String | 이메일          |
+| createdAt  | O  | String | 가입일          |
+| modifiedAt | O  | String | 회원정보 수정일(갱신) |
+
+* 상태코드
+
+| 상태코드 | 메시지                   | 설명                                     |
+| ---- | --------------------- | -------------------------------------- |
+| 200  | OK                    | 유저 수정 성공                               |
+| 400  | Bad Request           | 요청 값 누락/형식 오류(이메일 형식 오류, 비밀번호 8자 미만 등) |
+| 404  | Not Found             | 존재하지 않는 유저                             |
+
+### 유저 삭제
+
+1. 요청: Request header, Request body(JSON)
+* Method: DELETE
+* Endpoint: /api/user/{id}
+* header: x
+* body: x
+* 요청값
+
+| 필드명 | 필수 | 타입   | 설명                      |
+| --- | -- | ---- | ----------------------- |
+| id  | O  | Long | 삭제할 유저 ID(PathVariable) |
+
+2. ResponseBody(JSON)
+
+* 응답값: X
+* 상태코드
+
+| 상태코드 | 메시지                   | 설명         |
+| ---- | --------------------- | ---------- |
+| 200  | OK                    | 유저 삭제 성공   |
+| 404  | Not Found             | 존재하지 않는 유저 |
+
 ## 로그인(인증)
 
-### 로그인
+### 로그인(쿠키/세션)
 
 1. 요청: Request header, Request body(JSON)
 * Method: POST
