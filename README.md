@@ -16,8 +16,6 @@
 | title | O |String| 일정 제목 |
 | content | O |String | 일정 내용 |
 
-* 작성자 정보는 세션 로그인 유저로 자동 저장됨(schedule.user._id)
-
 2. 응답: ResponseBody(JSON)
 * 응답값
   
@@ -200,8 +198,8 @@
 
 ### 유저 전체 조회
 
-1. 요청
-* Method: POST
+1. 요청: Request header, Request body(JSON)
+* Method: GET
 * Endpoint: /api/user
 * header: content-Type > application/json
 * body: JSON
