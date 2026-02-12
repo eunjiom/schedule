@@ -1,8 +1,8 @@
 package kr.spartaclub.schedule_api.controller;
 
 import jakarta.validation.Valid;
-import kr.spartaclub.schedule_api.dto.UserResponse;
-import kr.spartaclub.schedule_api.dto.UserSignupRequest;
+import kr.spartaclub.schedule_api.dto.CreateUserResponse;
+import kr.spartaclub.schedule_api.dto.CreateUserRequest;
 import kr.spartaclub.schedule_api.service.UserService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -23,9 +23,9 @@ public class UserController {
 
     // 회원가입
     @PostMapping("/signup")
-    public ResponseEntity<UserResponse> signup(
-            @Valid @RequestBody UserSignupRequest request) {
-        UserResponse response = userService.signup(request);
+    public ResponseEntity<CreateUserResponse> signup(
+            @Valid @RequestBody CreateUserRequest request) {
+        CreateUserResponse response = userService.signup(request);
 
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }

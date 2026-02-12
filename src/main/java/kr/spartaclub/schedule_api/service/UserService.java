@@ -2,8 +2,8 @@ package kr.spartaclub.schedule_api.service;
 
 import jakarta.servlet.http.HttpSession;
 import kr.spartaclub.schedule_api.dto.LoginRequest;
-import kr.spartaclub.schedule_api.dto.UserResponse;
-import kr.spartaclub.schedule_api.dto.UserSignupRequest;
+import kr.spartaclub.schedule_api.dto.CreateUserResponse;
+import kr.spartaclub.schedule_api.dto.CreateUserRequest;
 import kr.spartaclub.schedule_api.entity.User;
 import kr.spartaclub.schedule_api.repository.UserRepository;
 import org.springframework.http.HttpStatus;
@@ -23,7 +23,7 @@ public class UserService {
     }
 
     @Transactional
-    public UserResponse signup(UserSignupRequest request) {
+    public CreateUserResponse signup(CreateUserRequest request) {
 
         // 1) 이메일 중복 체크 (회원가입 규칙)
         if (userRepository.existsByEmail(request.getEmail())) {
@@ -42,7 +42,7 @@ public class UserService {
         User savedUser = userRepository.save(user);
 
         // 4) 응답 DTO로 변환
-        return new UserResponse(
+        return new CreateUserResponse(
                 savedUser.getId(),
                 savedUser.getUsername(),
                 savedUser.getEmail(),

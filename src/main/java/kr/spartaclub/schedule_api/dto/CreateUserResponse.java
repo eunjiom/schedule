@@ -7,7 +7,7 @@ import java.time.LocalDateTime;
 
 @Getter
 @AllArgsConstructor
-public class UserResponse {
+public class CreateUserResponse {
 
     private Long id;
     private String username;
