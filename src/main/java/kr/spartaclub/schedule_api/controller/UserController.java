@@ -1,8 +1,10 @@
 package kr.spartaclub.schedule_api.controller;
 
+import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
 import kr.spartaclub.schedule_api.dto.CreateUserResponse;
 import kr.spartaclub.schedule_api.dto.CreateUserRequest;
+import kr.spartaclub.schedule_api.dto.LoginRequest;
 import kr.spartaclub.schedule_api.service.UserService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -29,4 +31,16 @@ public class UserController {
 
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
+
+    // 로그인
+    @PostMapping("/login")
+    public ResponseEntity<String> login(
+            @Valid @RequestBody LoginRequest request,
+            HttpSession session
+            ) {
+        String message = userService.login(request, session);
+
+        return ResponseEntity.ok(message);
+    }
+
 }

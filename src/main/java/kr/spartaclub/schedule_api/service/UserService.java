@@ -1,6 +1,7 @@
 package kr.spartaclub.schedule_api.service;
 
 import jakarta.servlet.http.HttpSession;
+import kr.spartaclub.schedule_api.dto.GetOneUserResponse;
 import kr.spartaclub.schedule_api.dto.LoginRequest;
 import kr.spartaclub.schedule_api.dto.CreateUserResponse;
 import kr.spartaclub.schedule_api.dto.CreateUserRequest;
@@ -76,4 +77,25 @@ public class UserService {
 
         return "로그인 성공";
     }
+
+    // 단건 조회
+    @Transactional(readOnly = true)
+    public GetOneUserResponse findUser(Long id){
+        User user = userRepository.findByEmail(id)
+                .orElseThrow(() -> new ResponseStatusException(
+                        HttpStatus.NOT_FOUND,
+                        "유저를 찾을 수 없습니다."
+                ));
+
+        return new GetOneUserResponse(
+                user.getId(),
+                user.getUsername(),
+                user.getEmail(),
+                user.getCreatedAt(),
+                user.getModifiedAt()
+        );
+    }
+
+    // 전체조회
+
 }
