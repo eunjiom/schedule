@@ -1,133 +1,189 @@
 package kr.spartaclub.schedule_api.service;
 
-import kr.spartaclub.schedule_api.dto.*;
+import jakarta.servlet.http.HttpSession;
+import kr.spartaclub.schedule_api.dto.CreateScheduleRequest;
+import kr.spartaclub.schedule_api.dto.CreateScheduleResponse;
+import kr.spartaclub.schedule_api.dto.GetOneScheduleResponse;
+import kr.spartaclub.schedule_api.dto.UpdateScheduleRequest;
+import kr.spartaclub.schedule_api.dto.UpdateScheduleResponse;
 import kr.spartaclub.schedule_api.entity.Schedule;
+import kr.spartaclub.schedule_api.entity.User;
 import kr.spartaclub.schedule_api.repository.ScheduleRepository;
-import lombok.RequiredArgsConstructor;
+import kr.spartaclub.schedule_api.repository.UserRepository;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import java.util.ArrayList;
+import org.springframework.web.server.ResponseStatusException;
+
 import java.util.List;
 
 @Service
-@RequiredArgsConstructor
 public class ScheduleService {
 
-    private final ScheduleRepository scheduleRepository;
+    private static final String LOGIN_USER = "LOGIN_USER";
 
-    // 저장
+    private final ScheduleRepository scheduleRepository;
+    private final UserRepository userRepository;
+
+    public ScheduleService(ScheduleRepository scheduleRepository, UserRepository userRepository) {
+        this.scheduleRepository = scheduleRepository;
+        this.userRepository = userRepository;
+    }
+
+    // 로그인 유저 확인
+    private Long getLoginUserId(HttpSession session) {
+        Object userId = session.getAttribute(LOGIN_USER);
+
+        if (userId == null) {
+            throw new ResponseStatusException(
+                    HttpStatus.UNAUTHORIZED,
+                    "로그인이 필요합니다."
+            );
+        }
+
+        return (Long) userId;
+    }
+
+    // 일정 생성
     @Transactional
-    public CreateScheduleResponse save(CreateScheduleRequest request){
+    public CreateScheduleResponse createSchedule(
+            CreateScheduleRequest request,
+            HttpSession session
+    ) {
+
+        Long loginUserId = getLoginUserId(session);
+
+        User user = userRepository.findById(loginUserId)
+                .orElseThrow(() ->
+                        new ResponseStatusException(
+                                HttpStatus.NOT_FOUND,
+                                "유저를 찾을 수 없습니다."
+                        )
+                );
+
         Schedule schedule = new Schedule(
                 request.getTitle(),
                 request.getContent(),
-                request.getAuthor(),
-                request.getPassword()
-
-        );
-        Schedule savedSchedule = scheduleRepository.save(schedule);
-
-        return new CreateScheduleResponse( //변수 인라인화
-
-            savedSchedule.getId(),
-            savedSchedule.getTitle(),
-                savedSchedule.getContent(),
-                savedSchedule.getAuthor(),
-                savedSchedule.getCreatedAt(),
-                savedSchedule.getModifiedAt()
+                user
         );
 
+        Schedule saved = scheduleRepository.save(schedule);
 
+        return new CreateScheduleResponse(
+                saved.getId(),
+                saved.getTitle(),
+                saved.getContent(),
+                user.getUsername(),
+                saved.getCreatedAt(),
+                saved.getModifiedAt()
+        );
     }
 
-    // 단 건 조회
+    // 일정 전체 조회
     @Transactional(readOnly = true)
-    public GetOneScheduleResponse getOne(Long scheduleId) {
-        Schedule schedule = scheduleRepository.findById(scheduleId).orElseThrow(
-                () -> new IllegalStateException("없는 일정입니다.")
-        );
+    public List<GetOneScheduleResponse> getSchedules() {
+
+        return scheduleRepository.findAll()
+                .stream()
+                .map(s -> new GetOneScheduleResponse(
+                        s.getId(),
+                        s.getTitle(),
+                        s.getContent(),
+                        s.getUser().getUsername(),
+                        s.getCreatedAt(),
+                        s.getModifiedAt()
+                ))
+                .toList();
+    }
+
+    // 일정 단건 조회
+    @Transactional(readOnly = true)
+    public GetOneScheduleResponse getSchedule(Long id) {
+
+        Schedule s = scheduleRepository.findById(id)
+                .orElseThrow(() ->
+                        new ResponseStatusException(
+                                HttpStatus.NOT_FOUND,
+                                "일정을 찾을 수 없습니다."
+                        )
+                );
 
         return new GetOneScheduleResponse(
-                schedule.getId(),
-                schedule.getTitle(),
-                schedule.getContent(),
-                schedule.getAuthor(),
-                schedule.getCreatedAt(),
-                schedule.getModifiedAt()
+                s.getId(),
+                s.getTitle(),
+                s.getContent(),
+                s.getUser().getUsername(),
+                s.getCreatedAt(),
+                s.getModifiedAt()
         );
     }
 
-    // 다 건 조회
-    @Transactional(readOnly = true)
-    public List<CreateScheduleResponse> getAll(String author) {
-        List<Schedule> schedules;
-
-        if (author != null) {
-            // author 필터 있는 경우
-            schedules = scheduleRepository.findByAuthorOrderByModifiedAtDesc(author);
-        } else {
-            // 전체 조회
-            schedules = scheduleRepository.findAllByOrderByModifiedAtDesc();
-        }
-
-        List<CreateScheduleResponse> dtos = new ArrayList<>();
-
-        for (Schedule schedule : schedules) {
-            CreateScheduleResponse dto = new CreateScheduleResponse(
-                    schedule.getId(),
-                    schedule.getTitle(),
-                    schedule.getContent(),
-                    schedule.getAuthor(),
-                    schedule.getCreatedAt(),
-                    schedule.getModifiedAt()
-            );
-            dtos.add(dto);
-        }
-        return dtos;
-    }
-
-    // 수정
+    // 일정 수정
     @Transactional
-    public UpdateScheduleResponse update(Long scheduleId, UpdateScheduleRequest request){
-        Schedule schedule = scheduleRepository.findById(scheduleId).orElseThrow(
-                () -> new IllegalStateException("없는 일정입니다")
-        );
+    public UpdateScheduleResponse updateSchedule(
+            Long id,
+            UpdateScheduleRequest request,
+            HttpSession session
+    ) {
 
-        if (!schedule.getPassword().equals(request.getPassword())) {
-            throw new IllegalStateException("비밀번호가 일치하지 않습니다.");
+        Long loginUserId = getLoginUserId(session);
+
+        Schedule s = scheduleRepository.findById(id)
+                .orElseThrow(() ->
+                        new ResponseStatusException(
+                                HttpStatus.NOT_FOUND,
+                                "일정을 찾을 수 없습니다."
+                        )
+                );
+
+        if (!s.getUser().getId().equals(loginUserId)) {
+            throw new ResponseStatusException(
+                    HttpStatus.FORBIDDEN,
+                    "수정 권한이 없습니다."
+            );
         }
 
-        schedule.update(
-                request.getTitle(),
-                request.getAuthor()
-        );
+        String newTitle = (request.getTitle() != null)
+                ? request.getTitle()
+                : s.getTitle();
 
+        String newContent = (request.getContent() != null)
+                ? request.getContent()
+                : s.getContent();
+
+        s.update(newTitle, newContent);
 
         return new UpdateScheduleResponse(
-                schedule.getId(),
-                schedule.getTitle(),
-                schedule.getContent(),
-                schedule.getAuthor(),
-                schedule.getCreatedAt(),
-                schedule.getModifiedAt()
+                s.getId(),
+                s.getTitle(),
+                s.getContent(),
+                s.getUser().getUsername(),
+                s.getCreatedAt(),
+                s.getModifiedAt()
         );
     }
 
-    // 삭제
+    // 일정 삭제
     @Transactional
-    public void delete(Long scheduleId, DeleteScheduleRequest request) {
+    public void deleteSchedule(Long id, HttpSession session) {
 
-        // 1) 일정(=유저라고 말했는데 여기선 일정)이 없는 경우 -> 예외
-        Schedule schedule = scheduleRepository.findById(scheduleId)
-                .orElseThrow(() -> new IllegalStateException("존재하지 않는 일정입니다."));
+        Long loginUserId = getLoginUserId(session);
 
-        // 2) 일정은 있는데 비밀번호가 틀린 경우 -> 예외
-        if (!schedule.isPasswordMatch(request.getPassword())) {
-            throw new IllegalStateException("비밀번호가 일치하지 않습니다.");
+        Schedule s = scheduleRepository.findById(id)
+                .orElseThrow(() ->
+                        new ResponseStatusException(
+                                HttpStatus.NOT_FOUND,
+                                "일정을 찾을 수 없습니다."
+                        )
+                );
+
+        if (!s.getUser().getId().equals(loginUserId)) {
+            throw new ResponseStatusException(
+                    HttpStatus.FORBIDDEN,
+                    "삭제 권한이 없습니다."
+            );
         }
 
-        // 3) 일정이 있고 비밀번호가 맞는 경우 -> 삭제(정상 케이스)
-        scheduleRepository.delete(schedule);
+        scheduleRepository.delete(s);
     }
-
 }

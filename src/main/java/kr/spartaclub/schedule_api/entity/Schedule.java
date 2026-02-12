@@ -4,59 +4,40 @@ import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import org.springframework.data.annotation.CreatedDate;
-import org.springframework.data.annotation.LastModifiedDate;
-import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
-import java.time.LocalDateTime;
 
 @Getter
 @Entity
 @Table(name = "schedules")
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-@EntityListeners(AuditingEntityListener.class)
-public class Schedule {
+public class Schedule extends BaseTime {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(length = 30, nullable = false)
-    private String title;   // 일정 제목
-
-    @Column(length = 200, nullable = false)
-    private String content; // 일정 내용
-
     @Column(nullable = false)
-    private String author;  // 작성자명
+    private String title;
 
-    @Column(nullable = false)
-    private String password; // 비밀번호
+    @Column(nullable = false, columnDefinition = "TEXT")
+    private String content;
 
-    @CreatedDate
-    @Column(nullable = false, updatable = false)
-    private LocalDateTime createdAt; // 작성일
+    // 일정은 "작성자 이름 문자열"이 아니라 "유저"를 들고 있어야 함
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "user_id", nullable = false)
+    private User user;
 
-    @LastModifiedDate
-    @Column(nullable = false)
-    private LocalDateTime modifiedAt; // 수정일
-
-    // 일정 생성
-    public Schedule(String title, String content, String author, String password) {
+    // 생성
+    public Schedule(String title, String content, User user) {
         this.title = title;
         this.content = content;
-        this.author = author;
-        this.password = password;
+        this.user = user;
     }
 
-    // 일정 수정 (제목, 작성자명만 가능)
-    public void update(String title, String author) {
+    // 수정
+    public void update(String title, String content) {
         this.title = title;
-        this.author = author;
-    }
-
-    // 비밀번호 검증
-    public boolean isPasswordMatch(String password) {
-        return this.password.equals(password);
+        this.content = content;
     }
 }
+
