@@ -1,4 +1,6 @@
 package kr.spartaclub.schedule_api.dto;
 
-public class UserSignopRequest {
+public class UserSignupRequest {
+
+
 }
