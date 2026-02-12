@@ -113,7 +113,7 @@ public class UserService {
 
     // 유저 수정
     @Transactional
-    public GetOneUserResponse updateUser(Long id, UpdateUserRequest request){
+    public UpdateUserResponse updateUser(Long id, UpdateUserRequest request){
         User user = userRepository.findById(id)
                 .orElseThrow(() ->
                         new ResponseStatusException(HttpStatus.NOT_FOUND,

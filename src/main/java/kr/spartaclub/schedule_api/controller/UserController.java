@@ -55,7 +55,7 @@ public class UserController {
 
     // 유저 수정
     @PatchMapping("/{id}")
-    public ResponseEntity<GetOneUserResponse> updateUser(
+    public ResponseEntity<UpdateUserResponse> updateUser(
             @PathVariable Long id,
             @Valid @RequestBody UpdateUserRequest request
             )
