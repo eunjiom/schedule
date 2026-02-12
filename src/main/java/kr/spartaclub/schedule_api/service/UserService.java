@@ -1,5 +1,7 @@
 package kr.spartaclub.schedule_api.service;
 
+import jakarta.servlet.http.HttpSession;
+import kr.spartaclub.schedule_api.dto.LoginRequest;
 import kr.spartaclub.schedule_api.dto.UserResponse;
 import kr.spartaclub.schedule_api.dto.UserSignupRequest;
 import kr.spartaclub.schedule_api.entity.User;
@@ -47,5 +49,31 @@ public class UserService {
                 savedUser.getCreatedAt(),
                 savedUser.getModifiedAt()
         );
+    }
+
+    // 로그인
+
+    @Transactional
+    public String login(LoginRequest request, HttpSession session) {
+
+        // 이메일 유저 찾기(없으면 로그인 실패)
+        User user = userRepository.findByEmail(request.getEmail())
+                .orElseThrow(() -> new ResponseStatusException(
+                        HttpStatus.UNAUTHORIZED,
+                        "이메일 또는 비밀번호가 올바르지 않습니다"
+                ));
+
+        // 비밀번호 확인(틀리면 로그인 실패)
+        if (!user.getPassword().equals(request.getPassword())) {
+            throw new ResponseStatusException(
+                    HttpStatus.UNAUTHORIZED,
+                    "이메일 또는 비밀번호가 올바르지 않습니다"
+            );
+        }
+
+        // 로그인 성공 > 세션에 로그인 정보 저장
+        session.setAttribute("LOGIN_USER", user.getId());
+
+        return "로그인 성공";
     }
 }
