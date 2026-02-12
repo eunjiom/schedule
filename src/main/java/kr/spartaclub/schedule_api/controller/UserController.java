@@ -2,7 +2,6 @@ package kr.spartaclub.schedule_api.controller;
 
 import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
-import jakarta.validation.constraints.Past;
 import kr.spartaclub.schedule_api.dto.*;
 import kr.spartaclub.schedule_api.service.UserService;
 import org.springframework.http.HttpStatus;
@@ -64,7 +63,6 @@ public class UserController {
         return ResponseEntity.ok(userService.updateUser(id, request));
     }
 
-    // 유저 삭제
     // 유저 삭제
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteUser(@PathVariable Long id) {

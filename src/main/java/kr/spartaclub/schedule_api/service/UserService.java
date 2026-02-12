@@ -137,7 +137,7 @@ public class UserService {
                 request.getPassword()
         );
 
-        return new GetOneUserResponse(
+        return new UpdateUserResponse(
                 user.getId(),
                 user.getUsername(),
                 user.getEmail(),
