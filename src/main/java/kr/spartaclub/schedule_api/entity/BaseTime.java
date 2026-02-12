@@ -11,7 +11,7 @@ import java.time.LocalDateTime;
 
 @MappedSuperclass
 @EntityListeners(AuditingEntityListener.class)
-public abstract class CommonTime {
+public abstract class BaseTime {
 
     @CreatedDate
     @Column(updatable = false)

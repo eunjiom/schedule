@@ -15,7 +15,6 @@ import java.util.List;
 public class ScheduleController {
 
     private final ScheduleService scheduleService;
-    private final ScheduleRepository scheduleRepository;
 
     @PostMapping("/schedule")
     public CreateScheduleResponse createSchedule(@RequestBody CreateScheduleRequest request) {
