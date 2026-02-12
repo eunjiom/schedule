@@ -2,10 +2,8 @@ package kr.spartaclub.schedule_api.controller;
 
 import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
-import kr.spartaclub.schedule_api.dto.CreateUserResponse;
-import kr.spartaclub.schedule_api.dto.CreateUserRequest;
-import kr.spartaclub.schedule_api.dto.GetOneUserResponse;
-import kr.spartaclub.schedule_api.dto.LoginRequest;
+import jakarta.validation.constraints.Past;
+import kr.spartaclub.schedule_api.dto.*;
 import kr.spartaclub.schedule_api.service.UserService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -55,4 +53,14 @@ public class UserController {
         return ResponseEntity.ok(userService.findUser(id));
     }
 
+
+    // 유저 수정
+    @PatchMapping("/{id}")
+    public ResponseEntity<GetOneUserResponse> updateUser(
+            @PathVariable Long id,
+            @Valid @RequestBody UpdateUserRequest request
+            )
+    {
+        return ResponseEntity.ok(userService.updateUser(id, request));
+    }
 }

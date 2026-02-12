@@ -34,8 +34,20 @@ public class User extends BaseTime {
     }
 
     // 회원수정
-    public void update(String username, String email) {
-        this.username = username;
-        this.email = email;
+    public void update(String username, String email, String password) {
+
+        if (username != null){
+            this.username = username;
+        }
+
+        if (email != null){
+            this.email = email;
+        }
+
+        if (password != null){
+            this.password = password;
+        }
     }
+
+
 }

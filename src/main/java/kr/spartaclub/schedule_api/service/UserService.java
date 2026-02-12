@@ -1,10 +1,7 @@
 package kr.spartaclub.schedule_api.service;
 
 import jakarta.servlet.http.HttpSession;
-import kr.spartaclub.schedule_api.dto.GetOneUserResponse;
-import kr.spartaclub.schedule_api.dto.LoginRequest;
-import kr.spartaclub.schedule_api.dto.CreateUserResponse;
-import kr.spartaclub.schedule_api.dto.CreateUserRequest;
+import kr.spartaclub.schedule_api.dto.*;
 import kr.spartaclub.schedule_api.entity.User;
 import kr.spartaclub.schedule_api.repository.UserRepository;
 import org.springframework.http.HttpStatus;
@@ -112,6 +109,41 @@ public class UserService {
                         user.getModifiedAt()
                 ))
                 .toList();
+    }
+
+    // 유저 수정
+    @Transactional
+    public GetOneUserResponse updateUser(Long id, UpdateUserRequest request){
+        User user = userRepository.findById(id)
+                .orElseThrow(() ->
+                        new ResponseStatusException(HttpStatus.NOT_FOUND,
+                                "유저를 찾을 수 없습니다"));
+
+        // 이메일 중복 검사
+        if (request.getEmail() != null){
+            userRepository.findByEmail(request.getEmail())
+                    .filter(found -> !found.getId().equals(id))
+                    .ifPresent(found -> {
+                        throw new ResponseStatusException(
+                                HttpStatus.CONFLICT,
+                                "이미 사용중인 이메일입니다."
+                        );
+                    });
+        }
+
+        user.update(
+                request.getUsername(),
+                request.getEmail(),
+                request.getPassword()
+        );
+
+        return new GetOneUserResponse(
+                user.getId(),
+                user.getUsername(),
+                user.getEmail(),
+                user.getCreatedAt(),
+                user.getModifiedAt()
+        );
     }
 
 }
