@@ -4,14 +4,14 @@ import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
 import kr.spartaclub.schedule_api.dto.CreateUserResponse;
 import kr.spartaclub.schedule_api.dto.CreateUserRequest;
+import kr.spartaclub.schedule_api.dto.GetOneUserResponse;
 import kr.spartaclub.schedule_api.dto.LoginRequest;
 import kr.spartaclub.schedule_api.service.UserService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("/users")
@@ -41,6 +41,18 @@ public class UserController {
         String message = userService.login(request, session);
 
         return ResponseEntity.ok(message);
+    }
+
+    // 전체 조회
+    @GetMapping
+    public ResponseEntity<List<GetOneUserResponse>> getUsers(){
+        return ResponseEntity.ok(userService.findAllUsers());
+    }
+
+    // 단건 조회
+    @GetMapping("/{id}")
+    public ResponseEntity<GetOneUserResponse> getUser(@PathVariable Long id){
+        return ResponseEntity.ok(userService.findUser(id));
     }
 
 }

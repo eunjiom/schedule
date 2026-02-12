@@ -12,6 +12,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.server.ResponseStatusException;
 
+import java.util.List;
+
 @Service
 public class UserService {
 
@@ -81,7 +83,7 @@ public class UserService {
     // 단건 조회
     @Transactional(readOnly = true)
     public GetOneUserResponse findUser(Long id){
-        User user = userRepository.findByEmail(id)
+        User user = userRepository.findById(id)
                 .orElseThrow(() -> new ResponseStatusException(
                         HttpStatus.NOT_FOUND,
                         "유저를 찾을 수 없습니다."
@@ -97,5 +99,19 @@ public class UserService {
     }
 
     // 전체조회
+    @Transactional(readOnly = true)
+    public List<GetOneUserResponse> findAllUsers(){
+
+        return userRepository.findAll()
+                .stream()
+                .map(user -> new GetOneUserResponse(
+                        user.getId(),
+                        user.getUsername(),
+                        user.getEmail(),
+                        user.getCreatedAt(),
+                        user.getModifiedAt()
+                ))
+                .toList();
+    }
 
 }
