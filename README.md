@@ -346,5 +346,6 @@
 
 ## ERD
 
-<img width="173" height="507" alt="ERD!" src="https://github.com/user-attachments/assets/9099200c-961d-4f2e-a5de-03a4defbc881" />
+<img width="171" height="469" alt="ERD!" src="https://github.com/user-attachments/assets/98a7c86f-5080-4db2-bdf8-11452cee3871" />
+
 
